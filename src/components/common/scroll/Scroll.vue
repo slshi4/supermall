@@ -37,6 +37,7 @@ export default {
       probeType: this.probeType,
       pullUpLoad:  this.pullUpLoad,
       click: true,
+
     })
 
     console.log(this.scroll);

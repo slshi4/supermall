@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <keep-alive>
+<!-- 排除Detail组件不让它keepAlive，意味着组件的created()每次都会执行    exclude="Detail"-->
+    <keep-alive exclude="Detail">
       <router-view/>
     </keep-alive>
     <MainTabBar/>

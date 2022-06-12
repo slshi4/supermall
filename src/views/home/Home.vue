@@ -135,6 +135,7 @@ components:{
     tabOffSetTop: 0,
     isTabFixed: false,
     saveY: 0,
+    itemImgListener: null,
     }
   },
   created() {
@@ -148,6 +149,9 @@ components:{
     this.getHomeGoods('new');
     this.getHomeGoods('sell');
 
+    //手动点击一次   this.$refs.tabControl1 == undefined
+    // this.tabClick(0);
+
   },
   computed: {
   showGoods() {
@@ -159,14 +163,18 @@ components:{
     // console.log(this.$refs.aaa);
     //1.图片加载完成的事件监听
     const refresh = debounce(this.$refs.scroll.refresh,500);
-    //用事件总线监听
-    this.$bus.$on("itemImageLoad", () => {
+    this.itemImgListener = () => {
       // console.log("--------");
       // this.$refs.scroll.refresh();
       refresh()
+      // refresh(20,30,'adc')
       // console.log("--------");
-    })
+    };
+    //用事件总线监听
+    this.$bus.$on("itemImageLoad", this.itemImgListener)
 
+  // this.$refs.tabControl1 !== undefined
+  this.tabClick(0);
 
   },
   destroyed() {
@@ -174,19 +182,28 @@ components:{
   },
 
   activated() {
+    console.log("home enter");
+    //这个方法必须放在 this.$refs.scroll.scrollTo(0,this.saveY,0)方法前面
+    this.$refs.scroll.refresh();
     console.log("activated");
     console.log("activated"+ this.saveY);
     console.log(this.$refs.scroll);
     this.$refs.scroll.scrollTo(0,this.saveY,0)
 
-    this.$refs.scroll.refresh();
+    // this.$refs.scroll.refresh();
   },
 
   deactivated() {
+    console.log("home leave");
     console.log("deactivated");
+    // this.$refs.scroll.scroll.on('scrollEnd', () => {})
+    //todo 1.保存y值
     this.saveY = this.$refs.scroll.getScrollY()
     console.log(this.$refs.scroll);
     console.log("deactivated"+ this.saveY);
+
+    //todo 2.取消全局事件的监听
+    this.$bus.$off('itemImageLoad',this.itemImgListener);
   },
 
   methods: {
@@ -206,8 +223,11 @@ components:{
         this.currentType = 'sell'
     }
     //tabControl1,tabControl2 使两者保持一致
-    this.$refs.tabControl1.currentIndex = index;
-    this.$refs.tabControl2.currentIndex = index;
+    if(this.$refs.tabControl1 !== undefined){
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
+    }
+
   },
 
 
