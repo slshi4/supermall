@@ -307,8 +307,8 @@ name: "Detail",
         this.message= '';
         },1500)*/
         console.log(this.$toast);
-        // this.$toast.show(res,2000);
-        this.$toast.show();
+        this.$toast.show(res,2000);
+        // this.$toast.show();
       });
 
     },
